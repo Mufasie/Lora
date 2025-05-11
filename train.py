@@ -1,29 +1,49 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
+import numpy as np
+from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, accuracy_score
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import RobustScaler
+from sklearn.compose import ColumnTransformer
 import joblib
 
-# Load the data
+# Load data
 df = pd.read_csv("newData.csv")
 
-# Features and target
-X = df[['voltage', 'current']]
+# Features and target (only using 'voltage' and 'current')
+features = ['voltage', 'current']
+X = df[features]
 y = df['label']
 
-# Split into training and test sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Train/test split with stratification
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, stratify=y, random_state=42
+)
 
-# Create and train the model
-model = RandomForestClassifier(n_estimators=100, random_state=42)
-model.fit(X_train, y_train)
+# Preprocessing: Scale robustly to handle outliers
+preprocessor = ColumnTransformer([
+    ('scaler', RobustScaler(), features)
+])
 
-# Make predictions
-y_pred = model.predict(X_test)
+# Pipeline with preprocessing + classifier
+pipeline = Pipeline([
+    ('preprocess', preprocessor),
+    ('classifier', RandomForestClassifier(n_estimators=150, max_depth=None, random_state=42))
+])
 
-# Evaluation
+# Train model
+pipeline.fit(X_train, y_train)
+
+# Predict and evaluate
+y_pred = pipeline.predict(X_test)
 print("Accuracy:", accuracy_score(y_test, y_pred))
 print("Classification Report:\n", classification_report(y_test, y_pred))
 
-# Save the model
-joblib.dump(model, "motor_status_model.pkl")
+# Optional: cross-validation score
+cv_scores = cross_val_score(pipeline, X, y, cv=5)
+print("Cross-validation Accuracy Scores:", cv_scores)
+print("Average CV Accuracy:", np.mean(cv_scores))
+
+# Save the pipeline model
+joblib.dump(pipeline, "robust_motor_status_model2.pkl")
