@@ -1,0 +1,8 @@
+vibration_sensor,temperature_sensor,predicted_label,predicted_condition
+675,593,0,Normal
+675,450,0,Normal
+675,266,1,Failure
+675,246,1,Failure
+450,246,1,Failure
+389,246,1,Failure
+286,246,1,Failure
