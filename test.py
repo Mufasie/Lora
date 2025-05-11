@@ -3,15 +3,15 @@ import numpy as np
 import pandas as pd
 
 # Load the saved model
-model = joblib.load("robust_motor_status_model2.pkl")
+model = joblib.load("robust_motor_status_model3.pkl")
 
 # Sample test data: each row is [voltage, current]
 # You can modify or expand this list to test with more data
 test_samples = np.array([
-    [9.90, 1.02],   # Expected: 1 (Load fault)
-    [7.25, 0.23],   # Expected: 2 (Battery fault)
-    [6.80, 2.50],   # Expected: 3 (Both faults)
-    [9.1, 0.4],    # Expected: 0 (Normal)
+    [9.14, 0.93],   # Expected: 1 (Load fault)
+    [8.90, 0.84],   # Expected: 2 (Battery fault)
+    [7.90, 0.90],   # Expected: 3 (Both faults)
+    [9.1, 0.13],    # Expected: 0 (Normal)
 ])
 
 # Convert the test samples to a DataFrame with appropriate column names

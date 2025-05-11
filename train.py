@@ -9,7 +9,7 @@ from sklearn.compose import ColumnTransformer
 import joblib
 
 # Load data
-df = pd.read_csv("newData.csv")
+df = pd.read_csv("newData2.csv")
 
 # Features and target (only using 'voltage' and 'current')
 features = ['voltage', 'current']
@@ -46,4 +46,4 @@ print("Cross-validation Accuracy Scores:", cv_scores)
 print("Average CV Accuracy:", np.mean(cv_scores))
 
 # Save the pipeline model
-joblib.dump(pipeline, "robust_motor_status_model2.pkl")
+joblib.dump(pipeline, "robust_motor_status_model3.pkl")
